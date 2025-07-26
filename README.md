@@ -16,7 +16,7 @@ An example of a Reeve transaction can be found here: [Cardano Explorer](https://
 
 ### What it is doing
 Reeve uses the metadata label `1447` for its transactions. That's why we are filtering the metadata events for this particaluar metadata label.
-Additionally we are filtering for an `organisationID`, since we only want to verify the data of one specific organisation.
+Additionally, we are filtering for an `organisationID`, since we only want to verify the data of one specific organisation.
 The process can be found in the [CustomMetadataStorage.java](src/main/java/org/cardanofoundation/reeve/indexer/yaci/CustomMetadataStorage.java) class.
 
 ### Things to do:
