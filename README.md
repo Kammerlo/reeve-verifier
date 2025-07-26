@@ -21,4 +21,4 @@ The process can be found in the [CustomMetadataStorage.java](src/main/java/org/c
 
 ### Things to do:
 - [ ] Implement basic frontend
-- [ ] Implement identity verficiation - Currently we are interpreting the metadata without identity verification
+- [ ] Implement identity verification - Currently we are interpreting the metadata without identity verification
