@@ -1,0 +1,42 @@
+apiPrefix: /api/v1
+spring:
+  application:
+    name: reeve-indexing-example
+  flyway:
+    locations: classpath:db/store/{vendor}
+    out-of-order: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/reeve_indexing_example?currentSchema=reeve
+    username: postgres
+    password: postgres
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  jpa:
+    hibernate:
+      ddl-auto: update
+reeve:
+  label: 1447
+  address: addr1qy77xcgfw6h867lt4r3px9rvtmf73a5em4h3ncs2rrewrhv9vmdr4wcalzyuua0jp2k9l729nychdd3ht8kgf2l9mrmq750nwl
+  organisation: 75f95560c1d883ee7628993da5adf725a5d97a13929fd4f477be0faf5020ca94
+
+store:
+  cardano:
+    host: backbone.mainnet.cardanofoundation.org
+    port: 3001
+    protocol-magic: 764824073
+    sync-start-slot: 159983856
+    sync-start-blockhash: 739cbc4d7ae7a15805ce2ede010b3a24c6d2e18489e3940731822f9f5488d670
+  executor:
+    enable-parallel-processing: true
+    block-processing-threads: 15
+    event-processing-threads: 30
+    blocks-batch-size: 200
+    blocks-partition-size: 10
+    use-virtual-thread-for-batch-processing: true
+    use-virtual-thread-for-event-processing: true
+  core:
+    enabled: true
+  metadata:
+    api-enabled: false
+server:
+  port: 9000
