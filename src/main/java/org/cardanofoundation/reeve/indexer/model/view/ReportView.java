@@ -17,6 +17,7 @@ import java.util.Map;
 public class ReportView {
 
     private Long id;
+    private String txHash;
 
     private String interval;
 
@@ -31,6 +32,7 @@ public class ReportView {
     public static ReportView fromEntity(ReportEntity entity, ObjectMapper objectMapper) throws JsonProcessingException {
         return ReportView.builder()
                 .id(entity.getId())
+                .txHash(entity.getTxHash())
                 .interval(entity.getInterval().name()) // Assuming Interval is an Enum
                 .year(entity.getYear())
                 .period(entity.getPeriod())

@@ -16,6 +16,7 @@ import java.util.List;
 public class TransactionView {
 
     private String id;
+    private String txHash;
     private String number;
     private String accountingPeriod;
     private String batchId;
@@ -26,6 +27,7 @@ public class TransactionView {
     public static TransactionView fromEntity(TransactionEntity entity) {
         return TransactionView.builder()
                 .id(entity.getId())
+                .txHash(entity.getTxHash())
                 .number(entity.getNumber())
                 .accountingPeriod(entity.getAccountingPeriod())
                 .batchId(entity.getBatchId())
