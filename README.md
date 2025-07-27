@@ -19,6 +19,25 @@ Reeve uses the metadata label `1447` for its transactions. That's why we are fil
 Additionally, we are filtering for an `organisationID`, since we only want to verify the data of one specific organisation.
 The process can be found in the [CustomMetadataStorage.java](src/main/java/org/cardanofoundation/reeve/indexer/yaci/CustomMetadataStorage.java) class.
 
+Within the repository we are also providing a simple frontend to display the data.
+
+### How to run it
+
+#### Starting the backend 
+The easiest way is to run it with docker.
+```bash
+docker compose up
+```
+This command will start a postgres database + the backend including the indexer. 
+
+#### Starting the frontend
+The frontend is a simple React application. You can start it with the following command:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ### Things to do:
-- [ ] Implement basic frontend
+- [X] Implement basic frontend
 - [ ] Implement identity verification - Currently we are interpreting the metadata without identity verification
