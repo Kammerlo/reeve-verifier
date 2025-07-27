@@ -4,8 +4,8 @@
 
 This repository is currently just a Proof-of-concept. In the future it's possible to become more, but for now it's just a PoC .
 
-The idea of this repository is to provide a simple way and an example how to verify Reeve onChain data.
-Reeve is an application introduced from the Cardano Foundation to provide trust and transparency about financial data of organisations.
+The idea of this repository is to provide a simple way and an example how to verify [Reeve](https://reeve.technology) onChain data.
+Reeve is an application introduced from the Cardano Foundation to provide trust and transparency about financial data of organisations. The backend code of Reeve can be found here: [GitHub](https://github.com/cardano-foundation/cf-reeve-platform)
 
 This repository uses [Yaci Store](https://github.com/bloxbean/yaci-store) as a modular indexer. 
 Since we are only interested in the metadata it is a perfect fit and we don't need to index everything from the blockchain.
@@ -15,11 +15,10 @@ An example of a Reeve transaction can be found here: [Cardano Explorer](https://
 
 
 ### What it is doing
-Reeve uses the metadata label `1447` for its transactions. That's why we are filtering the metadata events for this particaluar metadata label.
+Reeve uses the metadata label `1447` for its transactions and transactions/reports of the Cardano Foundation were published on mainnet. That's why we are filtering the metadata events for this particaluar metadata label.
 Additionally, we are filtering for an `organisationID`, since we only want to verify the data of one specific organisation.
 The process can be found in the [CustomMetadataStorage.java](src/main/java/org/cardanofoundation/reeve/indexer/yaci/CustomMetadataStorage.java) class.
-
-Within the repository we are also providing a simple frontend to display the data.
+Then the events are parsed and stored in the database. Via a simple API a frontend picks it up and displays the data.
 
 ### How to run it
 
