@@ -1,7 +1,6 @@
 package org.cardanofoundation.reeve.indexer.model.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class RawMetadata {
     private String txHash;
 
     private Organisation org;
-    private int ver;
+    private Long ver;
     private ReeveTransactionType type;
     private Metadata metadata;
 
@@ -31,7 +30,7 @@ public class RawMetadata {
 
     // In case it's a report
     private Interval interval;
-    private String year;
-    private int period;
+    private Integer year;
+    private Integer period;
     private String subType;
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.cardanofoundation.reeve.indexer.model.domain.Interval;
 import org.cardanofoundation.reeve.indexer.model.domain.Organisation;
+import org.cardanofoundation.reeve.indexer.model.domain.Project;
 import org.cardanofoundation.reeve.indexer.model.domain.RawMetadata;
 import org.cardanofoundation.reeve.indexer.model.domain.ReeveTransactionType;
 import org.cardanofoundation.reeve.indexer.model.domain.Transaction;
@@ -70,10 +71,10 @@ public class RawMetadataDeserializer extends StdDeserializer<RawMetadata> {
         // Deserialize other fields as needed (this example keeps it simple)
         // For a full implementation, you would map all other fields from rootNode here.
         if (rootNode.has("ver")) {
-            rawMetadata.setVer(rootNode.get("ver").asInt());
+            rawMetadata.setVer(rootNode.get("ver").asLong());
         }
         if (rootNode.has("year")) {
-            rawMetadata.setYear(rootNode.get("year").asText());
+            rawMetadata.setYear(rootNode.get("year").asInt());
         }
         if (rootNode.has("subType")) {
             rawMetadata.setSubType(rootNode.get("subType").asText());
@@ -92,7 +93,6 @@ public class RawMetadataDeserializer extends StdDeserializer<RawMetadata> {
                 rawMetadata.setOrg(codec.treeToValue(orgNode, Organisation.class));
             }
         }
-
 
         return rawMetadata;
     }

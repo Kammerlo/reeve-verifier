@@ -1,5 +1,8 @@
 apiPrefix: /api/v1
 spring:
+  mvc:
+    problemdetails:
+      enabled: true
   application:
     name: reeve-indexing-example
   flyway:
@@ -16,9 +19,6 @@ spring:
       ddl-auto: update
 reeve:
   label: 1447
-  address: addr1qy77xcgfw6h867lt4r3px9rvtmf73a5em4h3ncs2rrewrhv9vmdr4wcalzyuua0jp2k9l729nychdd3ht8kgf2l9mrmq750nwl
-  organisation: 75f95560c1d883ee7628993da5adf725a5d97a13929fd4f477be0faf5020ca94
-
 store:
   cardano:
     host: backbone.mainnet.cardanofoundation.org

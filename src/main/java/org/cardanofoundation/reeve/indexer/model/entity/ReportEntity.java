@@ -1,13 +1,14 @@
 package org.cardanofoundation.reeve.indexer.model.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Converter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,13 +35,18 @@ public class ReportEntity {
     @Enumerated(EnumType.STRING)
     private Interval interval;
 
-    private String year;
+    private Integer year;
 
-    private int period;
+    private Integer period;
 
     private String subType;
+
+    private Long ver;
 
     @Column(columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String fields;
+
+    @Column(name = "organisation_id", nullable = false)
+    private String organisationId;
 }

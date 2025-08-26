@@ -3,7 +3,10 @@ package org.cardanofoundation.reeve.indexer.model.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -17,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "reeve_transaction")
+@Table(name = "reeve_transactions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,6 +46,9 @@ public class TransactionEntity {
     @OneToMany(mappedBy = "transaction", orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default
     private List<TransactionItemEntity> items = new ArrayList<>();
+
+    @Column(name = "organisation_id", nullable = false)
+    private String organisationId;
 
     public void addItem(TransactionItemEntity item) {
         items.add(item);

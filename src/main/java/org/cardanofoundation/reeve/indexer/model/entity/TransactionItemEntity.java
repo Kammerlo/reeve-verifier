@@ -37,6 +37,23 @@ public class TransactionItemEntity {
     private String costCenterName;
     @Column(name = "costcenter_cust_code")
     private String costCenterCustCode;
+    @Column(name = "vat_rate")
+    private String vatRate;
+    @Column(name = "vat_cust_code")
+    private String vatCustCode;
+    @Column(name = "event_code")
+    private String eventCode;
+    @Column(name = "event_name")
+    private String eventName;
+    @Column(name = "project_cust_code")
+    private String projectCustCode;
+    @Column(name = "project_name")
+    private String projectName;
+    @Column(name = "counterparty_type")
+    private String counterPartyType;
+    @Column(name = "counterparty_cust_code")
+    private String counterPartyCustCode;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     private TransactionEntity transaction;

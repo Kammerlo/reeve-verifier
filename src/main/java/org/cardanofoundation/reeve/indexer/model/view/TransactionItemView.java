@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.reeve.indexer.model.entity.TransactionItemEntity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransactionItemView {
 
     private String id;

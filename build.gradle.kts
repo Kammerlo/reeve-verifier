@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.4"
+    id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("java")
 }
@@ -27,11 +27,14 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations")
     implementation("com.bloxbean.cardano:yaci-store-metadata-spring-boot-starter:0.1.4")
     implementation("org.postgresql:postgresql")
+
+    // implementation("org.zalando:problem-spring-web-starter:0.29.1")
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 tasks.withType<Test> {

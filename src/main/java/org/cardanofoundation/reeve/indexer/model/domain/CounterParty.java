@@ -11,11 +11,8 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Organisation {
+public class CounterParty {
 
-    private String id;
-    private String name;
-    private String currencyId;
-    private String countryCode;
-    private String taxIdNumber;
+    private String type;
+    private String custCode;
 }
