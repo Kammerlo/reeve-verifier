@@ -24,7 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {Transaction} from "@/types/transaction.ts";
+import { Transaction } from "@/types/transaction.ts";
 
 interface TransactionDetailProps {
   transaction?: Transaction;
@@ -35,7 +35,7 @@ interface TransactionDetailProps {
 const TransactionDetail = ({
   transaction,
   isOpen = true,
-  onClose = () => {},
+  onClose = () => { },
 }: TransactionDetailProps) => {
   const [isItemsExpanded, setIsItemsExpanded] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -50,12 +50,6 @@ const TransactionDetail = ({
     } catch (error) {
       return dateString;
     }
-  };
-
-  const calculateTotal = () => {
-    return transaction.items
-      .reduce((sum, item) => sum + parseFloat(item.amount), 0)
-      .toFixed(2);
   };
 
   const copyToClipboard = async (text: string, fieldName: string) => {
@@ -127,7 +121,7 @@ const TransactionDetail = ({
             </Button>
           </div>
           <DialogDescription>
-            View detailed information about transaction {transaction.number}
+            View detailed information about transaction {transaction.transactionInternalNumber}
           </DialogDescription>
         </DialogHeader>
 
@@ -140,37 +134,19 @@ const TransactionDetail = ({
                   <h3 className="text-sm font-medium text-gray-500">
                     Transaction Number
                   </h3>
-                  <p className="text-lg font-semibold">{transaction.number}</p>
+                  <p className="text-lg font-semibold">{transaction.transactionInternalNumber}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Date</h3>
                   <p className="text-lg font-semibold">
-                    {formatDate(transaction.date)}
+                    {formatDate(transaction.entryDate)}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Type</h3>
                   <Badge variant="outline" className="mt-1">
-                    {transaction.type}
+                    {transaction.transactionType}
                   </Badge>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">
-                    Accounting Period
-                  </h3>
-                  <p className="text-lg font-semibold">
-                    {transaction.accounting_period}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500">
-                    Batch ID
-                  </h3>
-                  <CopyableField
-                    value={transaction.batch_id}
-                    fieldName="batchId"
-                    maxLength={25}
-                  />
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">
@@ -178,13 +154,13 @@ const TransactionDetail = ({
                   </h3>
                   <div className="flex items-center gap-2">
                     <a
-                      href={`https://explorer.cardano.org/transaction/${transaction.tx_hash}`}
+                      href={`https://explorer.cardano.org/transaction/${transaction.blockChainHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 underline"
                     >
                       <CopyableField
-                        value={transaction.tx_hash}
+                        value={transaction.blockChainHash}
                         fieldName="txHash"
                         maxLength={25}
                       />
@@ -196,71 +172,13 @@ const TransactionDetail = ({
                     Total Amount
                   </h3>
                   <p className="text-lg font-semibold text-primary">
-                    {calculateTotal()} {transaction.items[0]?.currency || "USD"}
+                    {transaction.amountLcy} {transaction.documentCurrencyCustomerCode || "USD"}
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Transaction Items */}
-          <div>
-            <Accordion type="single" collapsible defaultValue="items">
-              <AccordionItem value="items">
-                <AccordionTrigger className="text-lg font-semibold">
-                  Transaction Items ({transaction.items.length})
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="bg-muted">
-                          <th className="p-2 text-left font-medium">Item ID</th>
-                          <th className="p-2 text-left font-medium">
-                            Document Number
-                          </th>
-                          <th className="p-2 text-right font-medium">Amount</th>
-                          <th className="p-2 text-left font-medium">
-                            Currency
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {transaction.items.map((item) => (
-                          <tr
-                            key={item.id}
-                            className="border-b border-gray-200 hover:bg-muted/50"
-                          >
-                            <td className="p-2 text-left">{item.id}</td>
-                            <td className="p-2 text-left">
-                              {item.document_number}
-                            </td>
-                            <td className="p-2 text-right font-medium">
-                              {parseFloat(item.amount).toFixed(2)}
-                            </td>
-                            <td className="p-2 text-left">{item.currency}</td>
-                          </tr>
-                        ))}
-                        <tr className="bg-muted/30">
-                          <td className="p-2 text-left" colSpan={2}>
-                            <strong>Total</strong>
-                          </td>
-                          <td className="p-2 text-right font-bold">
-                            {calculateTotal()}
-                          </td>
-                          <td className="p-2 text-left">
-                            {transaction.items[0]?.currency || "USD"}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
         </div>
-
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             Close

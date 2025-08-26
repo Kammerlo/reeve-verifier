@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -20,46 +20,30 @@ import {
 } from "@/components/ui/select";
 import { AlertCircle, Save, Construction } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Organisation } from "@/types/organisation";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 interface ConfigPanelProps {
-  onSave?: (config: ConfigSettings) => void;
-  initialConfig?: ConfigSettings;
+  apiUrl?: string;
+  setOrganisation: (org: Organisation) => void;
+  organisation: Organisation | null;
 }
 
-export interface ConfigSettings {
-  organizationId: string;
-}
+const ConfigPanel = ({ apiUrl = "http://localhost:9000", setOrganisation, organisation }: ConfigPanelProps) => {
 
-const ConfigPanel = ({ onSave, initialConfig }: ConfigPanelProps = {}) => {
-  const defaultConfig: ConfigSettings = {
-    organizationId: "",
-  };
-
-  const [config, setConfig] = useState<ConfigSettings>(
-    initialConfig || defaultConfig,
-  );
   const [error, setError] = useState<string>("");
+  const [availableOrganisations, setAvailableOrganisations] = useState<Organisation[]>([]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setConfig({ ...config, [name]: value });
-  };
-
-  const validateConfig = () => {
-    if (!config.organizationId.trim()) {
-      setError("Organization ID is required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const handleSave = () => {
-    if (validateConfig()) {
-      onSave?.(config);
-    }
-  };
+  useEffect(() => {
+    fetch(`${apiUrl}/api/v1/organisations`)
+      .then((response) => response.json())
+      .then((data) => {
+        setAvailableOrganisations(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }, [apiUrl]);
 
   return (
     <Card className="w-full max-w-md bg-white">
@@ -68,13 +52,36 @@ const ConfigPanel = ({ onSave, initialConfig }: ConfigPanelProps = {}) => {
         <CardDescription>Configure your organization settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert className="border-orange-200 bg-orange-50">
-          <Construction className="h-4 w-4 text-orange-600" />
-          <AlertDescription className="text-orange-800">
-            This configuration panel is currently under construction and not yet
-            functional.
-          </AlertDescription>
-        </Alert>
+        {availableOrganisations.length > 0 ? (
+          <ScrollArea>
+            <div className="flex flex-col space-y-2">
+              {availableOrganisations.map((org) => (
+                <div
+                  key={org.id}
+                  className={`p-3 border-b border-gray-200 cursor-pointer rounded transition-colors ${organisation?.id === org.id
+                    ? "bg-gray-200 border-gray-400"
+                    : "hover:bg-gray-100"
+                  }`}
+                  onClick={() =>
+                  organisation?.id === org.id
+                    ? setOrganisation(null)
+                    : setOrganisation(org)
+                  }
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={organisation?.id === org.id}
+                >
+                  <div className="font-bold text-lg">{org.name}</div>
+                  <div className="text-sm text-gray-500 mt-1">
+                  {org.countryCode || "No country code available"} | {org.currencyId || "No currency set"} | {org.taxIdNumber || "No tax ID"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        ) : (
+          <p>No organizations available</p>
+        )}
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -82,23 +89,8 @@ const ConfigPanel = ({ onSave, initialConfig }: ConfigPanelProps = {}) => {
           </Alert>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="organizationId">Organization ID</Label>
-          <Input
-            id="organizationId"
-            name="organizationId"
-            placeholder="Enter your organization ID"
-            value={config.organizationId}
-            onChange={handleInputChange}
-          />
-        </div>
+
       </CardContent>
-      <CardFooter>
-        <Button onClick={handleSave} className="w-full">
-          <Save className="mr-2 h-4 w-4" />
-          Save Configuration
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

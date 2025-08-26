@@ -33,50 +33,37 @@ import java.util.Optional;
 @Slf4j
 public class ReportController {
 
-    private final ReportService reportService;
-    private final OrganisationService organisationService;
+        private final ReportService reportService;
+        private final OrganisationService organisationService;
 
-    @Operation(summary = "Get all reports", description = "Retrieves a list of all reports currently stored in the system.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "List of reports retrieved successfully",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ReportView.class)
-                            )),
-                    @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of reports")
-    @GetMapping
-    public ResponseEntity<List<ReportView>> getAllReports() {
-        List<ReportView> reports = reportService.findAll();
-        return ResponseEntity.ok(reports);
-    }
+        @Operation(description = "Search transactions items published", responses = {
+                        @ApiResponse(content = {
+                                        @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReportResponseView.class)))
+                        })
+        })
+        @PostMapping(produces = "application/json")
+        public ResponseEntity<ReportResponseView> reportSearchPublicInterface(
+                        @Valid @RequestBody ReportSearchRequest reportSearchRequest) {
+                if (reportSearchRequest.getOrganisationId() != null) {
+                        Optional<OrganisationEntity> orgO = organisationService
+                                        .findById(reportSearchRequest.getOrganisationId());
 
-    @Operation(description = "Search transactions items published",
-            responses = {
-                    @ApiResponse(content = {
-                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReportResponseView.class)))
-                    })
-            }
-    )
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<ReportResponseView> reportSearchPublicInterface(@Valid @RequestBody ReportSearchRequest reportSearchRequest) {
+                        if (orgO.isEmpty()) {
+                                ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                                                "Unable to find Organisation by Id: %s"
+                                                                .formatted(reportSearchRequest.getOrganisationId()));
+                                problemDetail.setTitle("ORGANISATION_NOT_FOUND");
+                                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                                .body(ReportResponseView.createFail(problemDetail));
+                        }
+                }
 
-        Optional<OrganisationEntity> orgO = organisationService.findById(reportSearchRequest.getOrganisationId());
-
-        if (orgO.isEmpty()) {
-            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Unable to find Organisation by Id: %s".formatted(reportSearchRequest.getOrganisationId()));
-            problemDetail.setTitle("ORGANISATION_NOT_FOUND");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ReportResponseView.createFail(problemDetail));
+                return ResponseEntity.ok().body(ReportResponseView.createSuccess(reportService.findAllByTypeAndPeriod(
+                                reportSearchRequest.getOrganisationId(),
+                                reportSearchRequest.getReportType(),
+                                reportSearchRequest.getIntervalType(),
+                                reportSearchRequest.getYear(),
+                                reportSearchRequest.getPeriod())));
         }
-
-        return ResponseEntity.ok().body(ReportResponseView.createSuccess(reportService.findAllByTypeAndPeriod(
-                        reportSearchRequest.getOrganisationId(),
-                        reportSearchRequest.getReportType(),
-                        reportSearchRequest.getIntervalType(),
-                        reportSearchRequest.getYear(),
-                        reportSearchRequest.getPeriod()
-                )));
-    }
 
 }

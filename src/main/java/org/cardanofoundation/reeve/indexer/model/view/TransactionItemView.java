@@ -7,12 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.cardanofoundation.reeve.indexer.model.entity.TransactionItemEntity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class TransactionItemView {
 
     private String id;

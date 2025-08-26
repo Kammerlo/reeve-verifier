@@ -20,9 +20,9 @@ public interface TransactionItemRepository extends JpaRepository<TransactionItem
 
     @Query("""
             SELECT i FROM TransactionItemEntity i
-            WHERE i.transaction.organisationId = :organisationId
-            AND i.transaction.date >= :dateFrom
-            AND i.transaction.date <= :dateTo
+            WHERE (:organisationId IS NULL OR i.transaction.organisationId = :organisationId)
+            AND (:dateFrom IS NULL OR i.transaction.date >= :dateFrom)
+            AND (:dateTo IS NULL OR i.transaction.date <= :dateTo)
             AND (:events IS NULL OR i.eventCode IN :events)
             AND (:currencies IS NULL OR i.currency IN :currencies)
             AND (:minAmount IS NULL OR i.amount >= :minAmount)

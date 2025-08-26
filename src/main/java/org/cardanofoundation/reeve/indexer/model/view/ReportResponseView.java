@@ -15,11 +15,11 @@ public class ReportResponseView {
     private boolean success;
 
     private Long total;
-    private List<ReportView> report;
+    private List<ReportView> reports;
     private Optional<ProblemDetail> error;
 
-    public static ReportResponseView createSuccess(List<ReportView> reportView) {
-        return new ReportResponseView(true, reportView.stream().count(), reportView,
+    public static ReportResponseView createSuccess(List<ReportView> reports) {
+        return new ReportResponseView(true, reports.stream().count(), reports,
                 Optional.empty());
     }
 

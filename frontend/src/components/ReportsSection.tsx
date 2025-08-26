@@ -37,13 +37,17 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Report, ReportField, ParsedReportItem } from "@/types/transaction";
+import { Organisation } from "@/types/organisation";
+import { SearchBody } from "@/types/searchBody";
 
 interface ReportsSectionProps {
   apiUrl?: string;
+  organisation: Organisation | null;
 }
 
 const ReportsSection = ({
   apiUrl = "http://localhost:9000",
+  organisation
 }: ReportsSectionProps) => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,7 +60,7 @@ const ReportsSection = ({
   // Extract unique values for filters
   const years = [...new Set(reports.map((report) => report.year))];
   const periods = [...new Set(reports.map((report) => report.period))];
-  const subTypes = [...new Set(reports.map((report) => report.sub_type))];
+  const subTypes = [...new Set(reports.map((report) => report.type))];
 
   // Filter reports based on selections
   const filteredReports = reports.filter((report) => {
@@ -64,7 +68,7 @@ const ReportsSection = ({
       return (
         (selectedYear ? report.year === selectedYear : true) &&
         (selectedPeriod ? report.period === parseInt(selectedPeriod) : true) &&
-        (selectedSubType ? report.sub_type === selectedSubType : true)
+        (selectedSubType ? report.type === selectedSubType : true)
       );
     }
     return true;
@@ -74,12 +78,21 @@ const ReportsSection = ({
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${apiUrl}/api/v1/reports`);
+      let body: SearchBody = {};
+      if (organisation) {
+        body.organisationId = organisation.id;
+      }
+      const url = `${apiUrl}/api/v1/reports`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
       if (!response.ok) {
         throw new Error(`Error fetching reports: ${response.statusText}`);
       }
       const data = await response.json();
-      setReports(data);
+      setReports(data.reports);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch reports");
       setReports([]);
@@ -127,10 +140,10 @@ const ReportsSection = ({
 
   // Parse snake_case to normal case
   const parseSnakeCase = (str: string): string => {
-    return str
+    return str ? str
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
+      .join(" ") : str;
   };
 
   // Group parsed items by their first level for better visualization
@@ -182,13 +195,12 @@ const ReportsSection = ({
                       </span>
                     </div>
                     <span
-                      className={`font-mono text-sm ${
-                        groupTotal < 0
+                      className={`font-mono text-sm ${groupTotal < 0
                           ? "text-negative"
                           : groupTotal > 0
                             ? "text-positive"
                             : ""
-                      }`}
+                        }`}
                     >
                       {groupTotal.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
@@ -213,13 +225,12 @@ const ReportsSection = ({
                         </div>
                         <div className="text-right ml-2">
                           <div
-                            className={`font-mono font-semibold text-sm ${
-                              item.value < 0
+                            className={`font-mono font-semibold text-sm ${item.value < 0
                                 ? "text-negative"
                                 : item.value > 0
                                   ? "text-positive"
                                   : ""
-                            }`}
+                              }`}
                           >
                             {item.value.toLocaleString("en-US", {
                               minimumFractionDigits: 2,
@@ -282,10 +293,6 @@ const ReportsSection = ({
             className="w-full"
             onValueChange={setActiveTab}
           >
-            {/*<TabsList className="mb-4">*/}
-            {/*  <TabsTrigger value="all">All Reports</TabsTrigger>*/}
-            {/*  <TabsTrigger value="filtered">Filtered Reports</TabsTrigger>*/}
-            {/*</TabsList>*/}
 
             <TabsContent value="filtered">
               <div className="flex flex-wrap gap-4 mb-6">
@@ -296,8 +303,8 @@ const ReportsSection = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">All Years</SelectItem>
-                      {years.map((year) => (
-                        <SelectItem key={year} value={year}>
+                      {years.map((year, idx) => (
+                        <SelectItem key={`${year}-${idx}`} value={year}>
                           {year}
                         </SelectItem>
                       ))}
@@ -315,8 +322,8 @@ const ReportsSection = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">All Periods</SelectItem>
-                      {periods.map((period) => (
-                        <SelectItem key={period} value={period.toString()}>
+                      {periods.map((period, idx) => (
+                        <SelectItem key={`${period}-${idx}`} value={period.toString()}>
                           Period {period}
                         </SelectItem>
                       ))}
@@ -334,8 +341,8 @@ const ReportsSection = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">All Types</SelectItem>
-                      {subTypes.map((subType) => (
-                        <SelectItem key={subType} value={subType}>
+                      {subTypes.map((subType, idx) => (
+                        <SelectItem key={`${subType}-${idx}`} value={subType}>
                           {parseSnakeCase(subType)}
                         </SelectItem>
                       ))}
@@ -353,16 +360,24 @@ const ReportsSection = ({
               ) : filteredReports.length > 0 ? (
                 <div className="space-y-4">
                   {filteredReports.map((report) => (
-                    <Card key={report.id} className="overflow-hidden">
+                    <Card key={report.ver} className="overflow-hidden">
                       <CardHeader className="bg-muted/50 py-3">
                         <div className="flex justify-between items-center">
                           <div>
                             <CardTitle className="text-base">
-                              {parseSnakeCase(report.sub_type)} - {report.year}{" "}
+                              {parseSnakeCase(report.type)} - {report.year}{" "}
                               (Period {report.period})
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              {report.interval} | ID: {report.id}
+                              {report.intervalType} | ID: {report.ver} | Transaction Hash: <a
+                                href={`https://explorer.cardano.org/transaction/${report.blockChainHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline font-mono text-sm"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {report.blockChainHash.substring(0, 12)}...
+                              </a>
                             </CardDescription>
                           </div>
                           <FileText className="h-4 w-4 text-muted-foreground" />

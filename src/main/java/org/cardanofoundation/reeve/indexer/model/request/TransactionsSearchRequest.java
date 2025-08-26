@@ -25,15 +25,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TransactionsSearchRequest {
     
     @Schema(example = "75f95560c1d883ee7628993da5adf725a5d97a13929fd4f477be0faf5020ca94")
-    @NotBlank(message = "Organisation Id is mandatory and must not be blank or null.")
     private String organisationId;
 
     @Schema(example = "2023-01-01")
-    @NotNull
     private LocalDate dateFrom;
 
     @Schema(example = "2023-31-01")
-    @NotNull
     private LocalDate dateTo;
 
     private Set<String> events;

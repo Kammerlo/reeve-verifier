@@ -41,17 +41,19 @@ public class TransactionController {
         public ResponseEntity<ExtractionTransactionView> transactionSearchPublicInterface(
                         @Valid @RequestBody TransactionsSearchRequest transactionsRequest,
                         Pageable pageable) {
-                Optional<OrganisationEntity> orgM = organisationService
-                                .findById(transactionsRequest.getOrganisationId());
+                if (transactionsRequest.getOrganisationId() != null) {
+                        Optional<OrganisationEntity> orgM = organisationService
+                                        .findById(transactionsRequest.getOrganisationId());
 
-                if (orgM.isEmpty()) {
-                        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                                        HttpStatus.NOT_FOUND,
-                                        "Unable to find Organisation by Id: %s".formatted(
-                                                        transactionsRequest.getOrganisationId()));
-                        problemDetail.setTitle("ORGANISATION_NOT_FOUND");
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                        .body(ExtractionTransactionView.createFail(problemDetail));
+                        if (orgM.isEmpty()) {
+                                ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                                                HttpStatus.NOT_FOUND,
+                                                "Unable to find Organisation by Id: %s".formatted(
+                                                                transactionsRequest.getOrganisationId()));
+                                problemDetail.setTitle("ORGANISATION_NOT_FOUND");
+                                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                                .body(ExtractionTransactionView.createFail(problemDetail));
+                        }
                 }
 
                 return ResponseEntity.ok().body(transactionService.findTransactionItems(

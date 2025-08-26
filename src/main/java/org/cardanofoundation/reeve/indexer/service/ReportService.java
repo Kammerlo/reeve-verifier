@@ -19,14 +19,14 @@ public class ReportService {
     private final ObjectMapper objectMapper;
 
     public List<ReportView> findAllByTypeAndPeriod(String organisationId, String reportType,
-            String intervalType, short year, short period) {
+            String intervalType, Short year, Short period) {
        return reportRepository.findAllByOrganisationIdAndSubTypeAndIntervalAndYearAndPeriod(
-                organisationId, reportType, Interval.valueOf(intervalType), year, period)
+                organisationId, reportType, intervalType != null ? Interval.valueOf(intervalType) : null, year, period)
                 .stream()
                 .map(reportEntity -> {
                     try {
                         return ReportView.fromEntity(reportEntity,
-                                organisationService.findById(organisationId).orElseThrow(),
+                                organisationService.findById(reportEntity.getOrganisationId()).orElseThrow(),
                                 objectMapper);
                     } catch (Exception e) {
                         log.error("Error converting ReportEntity to ReportView: {}", e.getMessage());

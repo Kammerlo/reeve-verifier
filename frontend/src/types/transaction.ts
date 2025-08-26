@@ -1,29 +1,27 @@
-export interface TransactionItem {
-  id: string;
-  amount: string;
-  currency: string;
-  document_number: string;
-}
-
 export interface Transaction {
   id: string;
-  number: string;
-  accounting_period: string;
-  batch_id: string;
-  type: string;
-  date: string;
-  tx_hash: string;
-  items: TransactionItem[];
+  transactionInternalNumber: string;
+  entryDate: string;
+  transactionType: string;
+  blockChainHash: string;
+  amountLcy: string;
+  fxRate: string;
+  costCenterCustomerCode: string;
+  costCenterCustomerName: string;
+  accountEventCode: string;
+  accountEventName: string;
+  documentNum: string;
+  documentCurrencyCustomerCode: string;
+  vatCustomerCode: string;
+  vatRate: string;
 }
 
 export interface TransactionListResponse {
-  content: Transaction[];
-  total_pages: number;
-  total_elements: number;
-  page_number: number;
-  page_size: number;
-  first: boolean;
-  last: boolean;
+  success: boolean;
+  total: number;
+  transactions: Transaction[];
+  page: number;
+  size: number;
 }
 
 export interface ReportField {
@@ -31,11 +29,14 @@ export interface ReportField {
 }
 
 export interface Report {
-  id: number;
-  interval: string;
+  organisationId: string;
+  currency: string;
+  intervalType: string;
+  blockChainHash: string;
   year: string;
   period: number;
-  sub_type: string;
+  type: string;
+  ver: string;
   fields: Record<string, ReportField>;
 }
 

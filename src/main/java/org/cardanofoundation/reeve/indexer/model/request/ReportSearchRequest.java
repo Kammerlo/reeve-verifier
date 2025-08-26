@@ -18,7 +18,6 @@ import lombok.Setter;
 public class ReportSearchRequest {
     
     @Schema(example = "75f95560c1d883ee7628993da5adf725a5d97a13929fd4f477be0faf5020ca94")
-    @NotBlank(message = "Organisation Id is mandatory and must not be blank or null.")
     private String organisationId;
 
     @Schema(example = "INCOME_STATEMENT")
@@ -27,9 +26,9 @@ public class ReportSearchRequest {
     private String intervalType;
 
     @Schema(example = "2024")
-    private short year;
+    private Short year;
 
     @Schema(example = "3")
-    private short period;
+    private Short period;
 
 }
